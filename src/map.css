@@ -1,0 +1,13 @@
+.country {
+  stroke-width: 1;
+  stroke: #4f0828;
+  fill: #841f4c;
+}
+
+
+.affected-marker {
+  stroke-width: 1;
+  stroke: #f1f10a;
+  fill: #F9F871;
+  fill-opacity: 0.5;
+}
