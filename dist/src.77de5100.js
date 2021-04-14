@@ -29980,7 +29980,7 @@ module.exports = {
           "ISO": "ESP",
           "NAME_0": "Spain",
           "ID_1": 939,
-          "NAME_1": "Castilla-La Mancha",
+          "NAME_1": "Castilla La Mancha",
           "VARNAME_1": "Castela-La Mancha|Castela-Mancha|Castella-la Manxa|Castilha-La Mancha",
           "HASC_1": "ES.CM",
           "TYPE_1": "Comunidad Autónoma",
@@ -30019,8 +30019,8 @@ module.exports = {
           "ISO": "ESP",
           "NAME_0": "Spain",
           "ID_1": 942,
-          "NAME_1": "Comunidad de Madrid",
-          "VARNAME_1": "Madrid|Communauté de Madrid| Community of Madrid|Comunidad de Madrid |Comunidade de Madrid|Comunitat de Madrid",
+          "NAME_1": "Madrid",
+          "VARNAME_1": "Comunidad de Madrid|Communauté de Madrid| Community of Madrid|Comunidad de Madrid |Comunidade de Madrid|Comunitat de Madrid",
           "HASC_1": "ES.MD",
           "TYPE_1": "Comunidad Autónoma",
           "ENGTYPE_1": "Autonomous Community"
@@ -30032,7 +30032,7 @@ module.exports = {
           "ISO": "ESP",
           "NAME_0": "Spain",
           "ID_1": 943,
-          "NAME_1": "Comunidad Foral de Navarra",
+          "NAME_1": "Navarra",
           "VARNAME_1": "Communauté forale de Navarre|Comunidade Foral de Navarra|Comunitat Foral|Navarra",
           "HASC_1": "ES.NA",
           "TYPE_1": "Comunidad Autónoma",
@@ -30045,8 +30045,8 @@ module.exports = {
           "ISO": "ESP",
           "NAME_0": "Spain",
           "ID_1": 944,
-          "NAME_1": "Comunidad Valenciana",
-          "VARNAME_1": "Valencia|Communauté de Valence|Comunidade Valenciana|Comunidad Valenciana|Comunitat Valenciana",
+          "NAME_1": "Valencia",
+          "VARNAME_1": "Comunidad Valenciana|Communauté de Valence|Comunidade Valenciana|Comunidad Valenciana|Comunitat Valenciana",
           "HASC_1": "ES.VC",
           "TYPE_1": "Comunidad Autónoma",
           "ENGTYPE_1": "Autonomous Community"
@@ -30136,8 +30136,8 @@ module.exports = {
           "ISO": "ESP",
           "NAME_0": "Spain",
           "ID_1": 951,
-          "NAME_1": "Principado de Asturias",
-          "VARNAME_1": "Astúrias|Asturie|Asturien|Asturies|Astúries|Asturias",
+          "NAME_1": "Asturias",
+          "VARNAME_1": "Astúrias|Asturie|Asturien|Asturies|Astúries|Principado de Asturias",
           "HASC_1": "ES.AS",
           "TYPE_1": "Comunidad Autónoma",
           "ENGTYPE_1": "Autonomous Community"
@@ -30149,8 +30149,8 @@ module.exports = {
           "ISO": "ESP",
           "NAME_0": "Spain",
           "ID_1": 952,
-          "NAME_1": "Región de Murcia",
-          "VARNAME_1": "Murcia|Região de Múrcia|Regió de Múrcia|Région de Murcie|Region of Murcia",
+          "NAME_1": "Murcia",
+          "VARNAME_1": "Región de Murcia|Região de Múrcia|Regió de Múrcia|Région de Murcie|Region of Murcia",
           "HASC_1": "ES.MU",
           "TYPE_1": "Comunidad Autónoma",
           "ENGTYPE_1": "Autonomous Community"
@@ -40548,6 +40548,9 @@ var statsActual = [{
   name: "Islas Baleares",
   value: 71
 }, {
+  name: "Navarra",
+  value: 311
+}, {
   name: "Ceuta",
   value: 43
 }, {
@@ -40575,7 +40578,7 @@ var spainjson = require("./spain.json");
 var d3Composite = require("d3-composite-projections");
 
 // set the affected color scale
-var color = d3.scaleThreshold().domain([0, 1, 100, 500, 700, 5000]).range(["#FFFFF", "#FFE8E5", "#F88F70", "#CD6A4E", "#A4472D", "#7B240E", "#540000"]);
+var color = d3.scaleThreshold().domain([0, 10, 30, 50, 150, 200, 500, 800, 3000]).range(["#FFFFF", "#e1ecb4", "#def09a", "#c6d686", "#A6D480", "#77BB79", "#49A173", "#0D876B", "#006358"]);
 
 var assignCountryBackgroundColor = function assignCountryBackgroundColor(comunidad, stats) {
   var item = stats.find(function (item) {
@@ -40610,16 +40613,7 @@ function myFunction(d, stats) {
 }
 
 svg.selectAll("path").data(geojson["features"]).enter().append("path").attr("class", "country") // data loaded from json file
-.attr("d", geoPath);
-/*
-// data loaded from json file
-.attr("d", geoPath as any)
-.style("fill", function (d: any) {
-  //const entry = stats.find((item) => item.name === d);
-  return assignCountryBackgroundColor(d.properties.NAME_1, statsActual);
-});
-*/
-// Buttons and changing data series
+.attr("d", geoPath); // Buttons and changing data series
 
 document.getElementById("Previous").addEventListener("click", function handleResults() {
   updateChart(_stats.statsPrevious);
@@ -40644,6 +40638,17 @@ var updateChart = function updateChart(stat) {
     return aProjection([d.long, d.lat])[1];
   });
 };
+/*
+CHANGES IN NAMES:
+
+Comunidad de Madrid
+Castilla-La Mancha
+Comunidad Foral de Navarra
+Comunidad Valenciana
+Principado de Asturias
+Región de Murcia
+*/
+
 /*
 COLORES
 #91077D
@@ -40694,13 +40699,6 @@ const maxAffected2 = (dataset: ResultEntry[]) => {
 return max.value;
 };
 */
-
-/*
-Data taken from
-https://www.eldiario.es/sociedad/mapa-datos-coronavirus-espana-comunidades-autonomas-abril-9_1_1039633.html
-"casos notificados en el dia"
-12/04/2021
-*/
 },{"d3":"../node_modules/d3/index.js","topojson-client":"../node_modules/topojson-client/src/index.js","./spain.json":"spain.json","d3-composite-projections":"../node_modules/d3-composite-projections/index.js","./communities":"communities.ts","./stats":"stats.ts"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -40729,7 +40727,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51993" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53137" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

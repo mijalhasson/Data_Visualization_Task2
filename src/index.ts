@@ -9,15 +9,17 @@ import { statsPrevious, statsActual, ResultEntry } from "./stats";
 // set the affected color scale
 const color = d3
   .scaleThreshold<number, string>()
-  .domain([0, 1, 100, 500, 700, 5000])
+  .domain([0, 10, 30, 50, 150, 200, 500, 800, 3000])
   .range([
     "#FFFFF",
-    "#FFE8E5",
-    "#F88F70",
-    "#CD6A4E",
-    "#A4472D",
-    "#7B240E",
-    "#540000",
+    "#e1ecb4",
+    "#def09a",
+    "#c6d686",
+    "#A6D480",
+    "#77BB79",
+    "#49A173",
+    "#0D876B",
+    "#006358",
   ]);
 
 
@@ -72,15 +74,6 @@ svg
   .attr("class", "country")
   // data loaded from json file
   .attr("d", geoPath as any);
-
-  /*
-  // data loaded from json file
-  .attr("d", geoPath as any)
-  .style("fill", function (d: any) {
-    //const entry = stats.find((item) => item.name === d);
-    return assignCountryBackgroundColor(d.properties.NAME_1, statsActual);
-  });
-  */
  
 
 // Buttons and changing data series
@@ -121,7 +114,16 @@ const updateChart = (stat: ResultEntry[]) => {
     .attr("cy", (d) => aProjection([d.long, d.lat])[1]);
 };
 
+/*
+CHANGES IN NAMES:
 
+Comunidad de Madrid
+Castilla-La Mancha
+Comunidad Foral de Navarra
+Comunidad Valenciana
+Principado de Asturias
+Región de Murcia
+*/
 
 /*
 COLORES
@@ -172,11 +174,4 @@ const maxAffected2 = (dataset: ResultEntry[]) => {
 }
 return max.value;
 };
-*/
-
-/*
-Data taken from 
-https://www.eldiario.es/sociedad/mapa-datos-coronavirus-espana-comunidades-autonomas-abril-9_1_1039633.html
-"casos notificados en el dia"
-12/04/2021
 */

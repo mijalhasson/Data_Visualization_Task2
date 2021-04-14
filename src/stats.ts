@@ -137,6 +137,10 @@ export const statsActual:  ResultEntry[] = [
     value: 71,
   },
   {
+    name: "Navarra",
+    value: 311,
+  },
+  {
     name: "Ceuta",
     value: 43,
   },
