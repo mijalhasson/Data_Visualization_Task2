@@ -9,11 +9,13 @@ import { statsPrevious, statsActual, ResultEntry } from "./stats";
 // set the affected color scale
 const color = d3
   .scaleThreshold<number, string>()
-  .domain([0, 10, 30, 50, 150, 200, 500, 800, 3000])
+  .domain([0, 10, 20, 30, 40, 50, 150, 200, 500, 800, 3000])
   .range([
     "#FFFFF",
     "#e1ecb4",
+    "#d2e290",
     "#def09a",
+    "#c3da6e",
     "#c6d686",
     "#A6D480",
     "#77BB79",
@@ -23,29 +25,34 @@ const color = d3
   ]);
 
 
-  const assignCountryBackgroundColor = (comunidad: string,
-                                        stats: ResultEntry[]) => {
-    const item = stats.find(
-      (item) => item.name === comunidad
-    );
-    return item ? color(item.value) : color(0);
-  };
-  
-
-const maxAffected = (stats: ResultEntry[]) => {
-  return stats.reduce(
-  (max, item) => (item.value > max ? item.value : max), 0)
+const assignCommunityBackgroundColor = (comunidad: string,
+                                      stats: ResultEntry[]) => {
+  const item = stats.find(
+    (item) => item.name === comunidad
+  );
+  return item ? color(item.value) : color(0);
 };
+
+
+const maxAffected = statsPrevious.reduce(
+  (max, item) => (item.value > max ? item.value : max),
+  0
+);
+
+const affectedRadiusScale = d3
+  .scaleLinear()
+  .domain([0, <any>maxAffected])
+  .range([0, 50]); // 50 pixel max radius, we could calculate it relative to width and height
 
 const calculateRadiusBasedOnAffectedCases = (
   comunidad: string,
-  stats: ResultEntry[]
+  dataset: ResultEntry[]
 ) => {
-  var max = <number>maxAffected(stats);
-  const entry = stats.find((item) => item.name === comunidad);
-  
-  return entry ? (entry.value/max)*40 : 0;
-}
+  const entry = dataset.find((item) => item.name === comunidad);
+
+  // It is necessary to scale the numbers because they differ a lot from the previous and the actuals
+  return entry ? Math.log(affectedRadiusScale(entry.value))*5 + 1 : 0;
+};  
 
 const svg = d3
   .select("body")
@@ -63,9 +70,6 @@ const aProjection = d3Composite
 const geoPath = d3.geoPath().projection(aProjection);
 const geojson = topojson.feature(spainjson, spainjson.objects.ESP_adm1);
 
-function myFunction(d:any,stats: ResultEntry[] ) {
-  return assignCountryBackgroundColor(d.properties.NAME_1, stats);
-}
 svg
   .selectAll("path")
   .data(geojson["features"])
@@ -101,9 +105,9 @@ const updateChart = (stat: ResultEntry[]) => {
   // data loaded from json file
   .attr("d", geoPath as any)
   .style("fill", function (d: any) {
-    return assignCountryBackgroundColor(d.properties.NAME_1, stat);
+    return assignCommunityBackgroundColor(d.properties.NAME_1, stat);
   });
-  return svg
+  svg
     .selectAll("circle")
     .data(latLongCommunities)
     .enter()
@@ -126,52 +130,28 @@ Región de Murcia
 */
 
 /*
-COLORES
-#91077D
-#CB236E
-
-
-#########################
-.country {
-  stroke-width: 1;
-  stroke: #39245a;
-  fill: #704ea7;
-}
-
-
-.affected-marker {
-  stroke-width: 1;
-  stroke: #291b3d;
-  fill: #C197FF;
-  fill-opacity: 0.7;
-}
-
-########################
-.country {
-  stroke-width: 1;
-  stroke: #4f0828;
-  fill: #841f4c;
-}
-
-
-.affected-marker {
-  stroke-width: 1;
-  stroke: #7b3625;
-  fill: #D4674D;
-  fill-opacity: 0.7;
-}
-
-*/
-
- /*
-const maxAffected2 = (dataset: ResultEntry[]) => {
-  var max = dataset[0];
-  for(var i = 0; i < dataset.length; i++){
-    var item = dataset[i];
-    if(item.value>max.value){
-      max = item;
-    }
-}
-return max.value;
+const updateChart = (stat: ResultEntry[]) => {
+  console.log("updating")
+  svg.selectAll("path").remove();
+  svg.selectAll("circle").remove();
+  svg.selectAll("path")
+  .data(geojson["features"])
+  .enter()
+  .append("path")
+  .attr("class", "country")
+  // data loaded from json file
+  .attr("d", geoPath as any)
+  .style("fill", function (d: any) {
+    return assignCommunityBackgroundColor(d.properties.NAME_1, stat);
+  });
+  return svg
+    .selectAll("circle")
+    .data(latLongCommunities)
+    .enter()
+    .append("circle")
+    .attr("class", "affected-marker")
+    .attr("r", (d) => calculateRadiusBasedOnAffectedCases(d.name, stat))
+    .attr("cx", (d) => aProjection([d.long, d.lat])[0])
+    .attr("cy", (d) => aProjection([d.long, d.lat])[1]);
 };
 */

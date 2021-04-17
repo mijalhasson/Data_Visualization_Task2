@@ -40578,27 +40578,27 @@ var spainjson = require("./spain.json");
 var d3Composite = require("d3-composite-projections");
 
 // set the affected color scale
-var color = d3.scaleThreshold().domain([0, 10, 30, 50, 150, 200, 500, 800, 3000]).range(["#FFFFF", "#e1ecb4", "#def09a", "#c6d686", "#A6D480", "#77BB79", "#49A173", "#0D876B", "#006358"]);
+var color = d3.scaleThreshold().domain([0, 10, 20, 30, 40, 50, 150, 200, 500, 800, 3000]).range(["#FFFFF", "#e1ecb4", "#d2e290", "#def09a", "#c3da6e", "#c6d686", "#A6D480", "#77BB79", "#49A173", "#0D876B", "#006358"]);
 
-var assignCountryBackgroundColor = function assignCountryBackgroundColor(comunidad, stats) {
+var assignCommunityBackgroundColor = function assignCommunityBackgroundColor(comunidad, stats) {
   var item = stats.find(function (item) {
     return item.name === comunidad;
   });
   return item ? color(item.value) : color(0);
 };
 
-var maxAffected = function maxAffected(stats) {
-  return stats.reduce(function (max, item) {
-    return item.value > max ? item.value : max;
-  }, 0);
-};
+var maxAffected = _stats.statsPrevious.reduce(function (max, item) {
+  return item.value > max ? item.value : max;
+}, 0);
 
-var calculateRadiusBasedOnAffectedCases = function calculateRadiusBasedOnAffectedCases(comunidad, stats) {
-  var max = maxAffected(stats);
-  var entry = stats.find(function (item) {
+var affectedRadiusScale = d3.scaleLinear().domain([0, maxAffected]).range([0, 50]); // 50 pixel max radius, we could calculate it relative to width and height
+
+var calculateRadiusBasedOnAffectedCases = function calculateRadiusBasedOnAffectedCases(comunidad, dataset) {
+  var entry = dataset.find(function (item) {
     return item.name === comunidad;
-  });
-  return entry ? entry.value / max * 40 : 0;
+  }); // It is necessary to scale the numbers because they differ a lot from the previous and the actuals
+
+  return entry ? Math.log(affectedRadiusScale(entry.value)) * 5 + 1 : 0;
 };
 
 var svg = d3.select("body").append("svg").attr("width", 1024).attr("height", 800).attr("style", "background-color: #FBFAF0");
@@ -40607,11 +40607,6 @@ var aProjection = d3Composite.geoConicConformalSpain() // Let's make the map big
 .translate([500, 400]);
 var geoPath = d3.geoPath().projection(aProjection);
 var geojson = topojson.feature(spainjson, spainjson.objects.ESP_adm1);
-
-function myFunction(d, stats) {
-  return assignCountryBackgroundColor(d.properties.NAME_1, stats);
-}
-
 svg.selectAll("path").data(geojson["features"]).enter().append("path").attr("class", "country") // data loaded from json file
 .attr("d", geoPath); // Buttons and changing data series
 
@@ -40628,9 +40623,9 @@ var updateChart = function updateChart(stat) {
   svg.selectAll("circle").remove();
   svg.selectAll("path").data(geojson["features"]).enter().append("path").attr("class", "country") // data loaded from json file
   .attr("d", geoPath).style("fill", function (d) {
-    return assignCountryBackgroundColor(d.properties.NAME_1, stat);
+    return assignCommunityBackgroundColor(d.properties.NAME_1, stat);
   });
-  return svg.selectAll("circle").data(_communities.latLongCommunities).enter().append("circle").attr("class", "affected-marker").attr("r", function (d) {
+  svg.selectAll("circle").data(_communities.latLongCommunities).enter().append("circle").attr("class", "affected-marker").attr("r", function (d) {
     return calculateRadiusBasedOnAffectedCases(d.name, stat);
   }).attr("cx", function (d) {
     return aProjection([d.long, d.lat])[0];
@@ -40650,53 +40645,29 @@ Región de Murcia
 */
 
 /*
-COLORES
-#91077D
-#CB236E
-
-
-#########################
-.country {
-  stroke-width: 1;
-  stroke: #39245a;
-  fill: #704ea7;
-}
-
-
-.affected-marker {
-  stroke-width: 1;
-  stroke: #291b3d;
-  fill: #C197FF;
-  fill-opacity: 0.7;
-}
-
-########################
-.country {
-  stroke-width: 1;
-  stroke: #4f0828;
-  fill: #841f4c;
-}
-
-
-.affected-marker {
-  stroke-width: 1;
-  stroke: #7b3625;
-  fill: #D4674D;
-  fill-opacity: 0.7;
-}
-
-*/
-
-/*
-const maxAffected2 = (dataset: ResultEntry[]) => {
- var max = dataset[0];
- for(var i = 0; i < dataset.length; i++){
-   var item = dataset[i];
-   if(item.value>max.value){
-     max = item;
-   }
-}
-return max.value;
+const updateChart = (stat: ResultEntry[]) => {
+  console.log("updating")
+  svg.selectAll("path").remove();
+  svg.selectAll("circle").remove();
+  svg.selectAll("path")
+  .data(geojson["features"])
+  .enter()
+  .append("path")
+  .attr("class", "country")
+  // data loaded from json file
+  .attr("d", geoPath as any)
+  .style("fill", function (d: any) {
+    return assignCommunityBackgroundColor(d.properties.NAME_1, stat);
+  });
+  return svg
+    .selectAll("circle")
+    .data(latLongCommunities)
+    .enter()
+    .append("circle")
+    .attr("class", "affected-marker")
+    .attr("r", (d) => calculateRadiusBasedOnAffectedCases(d.name, stat))
+    .attr("cx", (d) => aProjection([d.long, d.lat])[0])
+    .attr("cy", (d) => aProjection([d.long, d.lat])[1]);
 };
 */
 },{"d3":"../node_modules/d3/index.js","topojson-client":"../node_modules/topojson-client/src/index.js","./spain.json":"spain.json","d3-composite-projections":"../node_modules/d3-composite-projections/index.js","./communities":"communities.ts","./stats":"stats.ts"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
@@ -40727,7 +40698,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53137" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60029" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
