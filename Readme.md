@@ -1,4 +1,4 @@
-# Multiple Series
+# Multiple Series with Background Scale
 
 In this challenge we want to obtain something like this:
 
@@ -53,7 +53,7 @@ const assignCommunityBackgroundColor = (comunidad: string,
 ```
 
 - Finally it is time to change the updateChart because in this case we need that the colour of the communities changes depending on the stats.
-- It is necessary to remove the path because without this step we couldn't change the path from the given onee firstly. Then we color the path with _assignCommunityBackgroundColor_:
+- It is necessary to remove the path because without this step we couldn't change the path from the given one firstly. Then we color the path with _assignCommunityBackgroundColor_:
 
 _./src/index.ts_
 
@@ -84,7 +84,7 @@ const updateChart = (stat: ResultEntry[]) => {
 };
 ```
 
-- Moreover, it is necessary that the communities have the same name in the three files: _stats.ts_, _spain.json_, _communities.ts_. For that reason we have chaanged the names of the communities in the file _spain.json_, for having the same names than in the other two:
+- Moreover, it is necessary that the communities have the same name in the three files: _stats.ts_, _spain.json_ and _communities.ts_. For that reason we have changed the names of the communities in the file _spain.json_, for having the same names than in the other two:
 
 
 _./src/spain.json_
