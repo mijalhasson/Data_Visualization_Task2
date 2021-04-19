@@ -40633,43 +40633,6 @@ var updateChart = function updateChart(stat) {
     return aProjection([d.long, d.lat])[1];
   });
 };
-/*
-CHANGES IN NAMES:
-
-Comunidad de Madrid
-Castilla-La Mancha
-Comunidad Foral de Navarra
-Comunidad Valenciana
-Principado de Asturias
-Región de Murcia
-*/
-
-/*
-const updateChart = (stat: ResultEntry[]) => {
-  console.log("updating")
-  svg.selectAll("path").remove();
-  svg.selectAll("circle").remove();
-  svg.selectAll("path")
-  .data(geojson["features"])
-  .enter()
-  .append("path")
-  .attr("class", "country")
-  // data loaded from json file
-  .attr("d", geoPath as any)
-  .style("fill", function (d: any) {
-    return assignCommunityBackgroundColor(d.properties.NAME_1, stat);
-  });
-  return svg
-    .selectAll("circle")
-    .data(latLongCommunities)
-    .enter()
-    .append("circle")
-    .attr("class", "affected-marker")
-    .attr("r", (d) => calculateRadiusBasedOnAffectedCases(d.name, stat))
-    .attr("cx", (d) => aProjection([d.long, d.lat])[0])
-    .attr("cy", (d) => aProjection([d.long, d.lat])[1]);
-};
-*/
 },{"d3":"../node_modules/d3/index.js","topojson-client":"../node_modules/topojson-client/src/index.js","./spain.json":"spain.json","d3-composite-projections":"../node_modules/d3-composite-projections/index.js","./communities":"communities.ts","./stats":"stats.ts"}],"../node_modules/parcel/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -40698,7 +40661,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "60029" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53076" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
